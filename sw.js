@@ -1,6 +1,6 @@
 // Service Worker: hält die App offline verfügbar.
 // Bei Änderungen an den Dateien VERSION erhöhen, damit Geräte das Update laden.
-const VERSION = 'dehnroutine-v1';
+const VERSION = 'dehnroutine-v2';
 const FILES = [
   './',
   './index.html',
@@ -31,7 +31,10 @@ self.addEventListener('activate', (event) => {
 
 // Netzwerk zuerst (damit Updates sofort ankommen), offline aus dem Cache.
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET' || new URL(event.request.url).origin !== location.origin) return;
+  const url = new URL(event.request.url);
+  if (event.request.method !== 'GET' || url.origin !== location.origin) return;
+  // Videos direkt laden: Safari spielt sie nur mit Range-Requests ab.
+  if (url.pathname.endsWith('.mp4')) return;
   event.respondWith(
     fetch(event.request)
       .then((res) => {

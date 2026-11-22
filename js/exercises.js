@@ -2,6 +2,7 @@
 // R = vorderer Arm/vorderes Bein (kräftig), L = hinterer Arm/hinteres Bein (blass).
 // Bei Frontansicht (view: 'front') sind beide Seiten gleich kräftig.
 // focus: Körpersegmente, die als Zielmuskel aufleuchten (siehe figure.js).
+// media: optionales Foto/Video (ersetzt die gezeichnete Figur, siehe docs/ki-bilder-prompts.md).
 
 const STAND = {
   root: [100, 124], spine: [180, 180], head: 180,
@@ -185,6 +186,7 @@ export const EXERCISES = [
   },
   {
     id: 'katzekuh',
+    media: { video: 'media/katzekuh.mp4', poster: 'media/katzekuh-start.jpg' },
     focus: ['torsoLow', 'torsoUp'],
     name: 'Katze-Kuh',
     area: 'Rücken',

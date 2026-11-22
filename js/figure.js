@@ -110,7 +110,32 @@ export class Figure {
     });
     this.svg.append(g);
     container.append(this.svg);
+    this.container = container;
     this.raf = 0;
+  }
+
+  // Foto (statisch) oder Video (Schleife) anzeigen. iOS spielt nur stumme Inline-Videos automatisch ab.
+  showMedia({ video, poster }, { mirror, animate }) {
+    const want = animate && video ? 'video' : 'img';
+    if (this.media?.tagName.toLowerCase() !== want) {
+      this.media?.remove();
+      this.media = document.createElement(want);
+      this.media.className = 'fig-media';
+      if (want === 'video') Object.assign(this.media, { muted: true, loop: true, playsInline: true, autoplay: true });
+      this.media.setAttribute('aria-hidden', 'true');
+      this.container.append(this.media);
+    }
+    if (want === 'video') {
+      if (!this.media.src.endsWith(video)) {
+        this.media.poster = poster;
+        this.media.src = video;
+      }
+      this.media.play?.().catch(() => {});
+    } else {
+      this.media.alt = '';
+      this.media.src = poster;
+    }
+    this.media.style.transform = mirror ? 'scaleX(-1)' : '';
   }
 
   // animate=false zeigt statisch die Dehnposition.
@@ -124,6 +149,10 @@ export class Figure {
     this.focusFar = focus.filter((n) => n.endsWith('L'));
     this.focusNear = focus.filter((n) => !n.endsWith('L'));
     this.stop();
+    this.svg.style.display = exercise.media ? 'none' : '';
+    if (exercise.media) return this.showMedia(exercise.media, { mirror, animate: animate && !reducedMotion() });
+    this.media?.remove();
+    this.media = null;
     if (animate && !reducedMotion()) {
       this.t0 = performance.now();
       this.start();
@@ -182,6 +211,7 @@ export class Figure {
   }
 
   stop() {
+    this.media?.pause?.();
     if (this.raf) cancelAnimationFrame(this.raf);
     this.raf = 0;
   }

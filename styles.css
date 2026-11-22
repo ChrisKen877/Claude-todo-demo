@@ -186,6 +186,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .front .fig-skin-fill.far { fill: var(--skin); }
 .front .fig-pants.far { stroke: var(--pants); }
 
+.fig-media { width: 100%; height: 100%; display: block; object-fit: cover; border-radius: inherit; }
+.tr-figure { border-radius: 18px; overflow: hidden; }
+
 /* Verlauf */
 .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
 .cal-head .card-title { margin: 0; }
