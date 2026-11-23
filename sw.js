@@ -1,6 +1,6 @@
 // Service Worker: hält die App offline verfügbar.
 // Bei Änderungen an den Dateien VERSION erhöhen, damit Geräte das Update laden.
-const VERSION = 'dehnroutine-v10';
+const VERSION = 'dehnroutine-v11';
 const FILES = [
   './',
   './index.html',
@@ -11,10 +11,10 @@ const FILES = [
   './js/figure.js',
   './js/store.js',
   './js/trainer.js',
-  './icons/favicon.png',
-  './icons/icon-180.png',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
+  './icons/favicon-v2.png',
+  './icons/icon-180-v2.png',
+  './icons/icon-192-v2.png',
+  './icons/icon-512-v2.png',
 ];
 
 self.addEventListener('install', (event) => {
