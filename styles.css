@@ -116,7 +116,18 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 /* Routinen */
 .routine-list { display: flex; flex-direction: column; gap: 12px; }
-.routine { display: flex; gap: 14px; align-items: center; }
+.routine { display: flex; gap: 14px; align-items: center; position: relative; }
+.routine-body h3 { padding-right: 36px; }
+.fav-btn {
+  position: absolute; top: 8px; right: 8px;
+  width: 44px; height: 44px; display: grid; place-items: center;
+  border: 0; border-radius: 50%; background: none; color: var(--muted); cursor: pointer;
+}
+.fav-btn .icon { width: 24px; height: 24px; }
+.fav-btn.active { color: var(--warn); }
+.fav-btn.active .icon { fill: currentColor; }
+.fav-btn:active { transform: scale(0.9); }
+.fav-tip { margin-top: -8px; font-size: 14px; }
 .routine-figure { flex: 0 0 96px; aspect-ratio: 1; background: var(--surface-2); border-radius: 14px; overflow: hidden; }
 .routine.featured .routine-figure { flex-basis: 120px; }
 .routine-body { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; min-width: 0; }

@@ -36,7 +36,30 @@ function renderToday() {
   const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
   const showInstall = !standalone && !settings.installHintDismissed;
 
-  const routines = [getRoutine(suggested), ...ROUTINES.filter((r) => r.id !== suggested)];
+  // Reihenfolge: Favoriten (in der Reihenfolge, in der sie markiert wurden), dann der
+  // Vorschlag für die Tageszeit (falls nicht schon Favorit), dann alle übrigen Routinen.
+  const favIds = settings.favoriteRoutines.filter((id) => getRoutine(id));
+  const favorites = favIds.map(getRoutine);
+  const suggestion = favIds.includes(suggested) ? null : getRoutine(suggested);
+  const others = ROUTINES.filter((r) => !favIds.includes(r.id) && r.id !== suggested);
+
+  const heart = '<svg viewBox="0 0 24 24" aria-hidden="true" class="icon"><path d="M12 20s-7-4.4-9.2-8.6C1.2 8.3 3 4.5 6.6 4.5c2.1 0 3.4 1.2 5.4 3.3 2-2.1 3.3-3.3 5.4-3.3 3.6 0 5.4 3.8 3.8 6.9C19 15.6 12 20 12 20z"/></svg>';
+  const card = (r, { featured = false, eyebrow = '' } = {}) => {
+    const fav = favIds.includes(r.id);
+    return `
+      <article class="card routine ${featured ? 'featured' : ''}">
+        <div class="routine-figure" data-figure="${r.exercises[0]}" ${featured ? 'data-animate="true"' : ''}></div>
+        <div class="routine-body">
+          ${eyebrow ? `<p class="eyebrow accent">${esc(eyebrow)}</p>` : ''}
+          <h3>${esc(r.name)}</h3>
+          <p class="muted">${esc(r.description)}</p>
+          <p class="meta">${minutes(routineSeconds(r, settings.rest))} · ${r.exercises.length} Übungen</p>
+          <button class="btn ${featured ? 'primary' : ''}" data-start="${r.id}">Starten</button>
+        </div>
+        <button class="fav-btn ${fav ? 'active' : ''}" data-fav="${r.id}" aria-pressed="${fav}"
+          aria-label="${esc(r.name)} ${fav ? 'aus den Favoriten entfernen' : 'zu den Favoriten hinzufügen'}">${heart}</button>
+      </article>`;
+  };
 
   view.innerHTML = `
     <header class="page-head">
@@ -51,7 +74,7 @@ function renderToday() {
     </section>
 
     <p class="today-status ${stats.doneToday ? 'done' : ''}">
-      ${stats.doneToday ? '✓ Heute schon gedehnt – stark!' : 'Heute steht noch eine Einheit aus.'}
+      ${stats.doneToday ? '✓ Heute schon trainiert – stark!' : 'Heute steht noch eine Einheit aus.'}
     </p>
 
     ${showInstall ? `
@@ -63,20 +86,20 @@ function renderToday() {
         <button class="icon-btn small" data-act="dismiss-install" aria-label="Hinweis ausblenden">✕</button>
       </aside>` : ''}
 
-    <h2 class="section-title">Routinen</h2>
-    <div class="routine-list">
-      ${routines.map((r, i) => `
-        <article class="card routine ${i === 0 ? 'featured' : ''}">
-          <div class="routine-figure" data-figure="${r.exercises[0]}" ${i === 0 ? 'data-animate="true"' : ''}></div>
-          <div class="routine-body">
-            ${i === 0 ? '<p class="eyebrow accent">Vorschlag für jetzt</p>' : ''}
-            <h3>${esc(r.name)}</h3>
-            <p class="muted">${esc(r.description)}</p>
-            <p class="meta">${minutes(routineSeconds(r, settings.rest))} · ${r.exercises.length} Übungen</p>
-            <button class="btn ${i === 0 ? 'primary' : ''}" data-start="${r.id}">Starten</button>
-          </div>
-        </article>`).join('')}
-    </div>`;
+    ${favorites.length ? `
+      <h2 class="section-title">Meine Favoriten</h2>
+      <div class="routine-list">
+        ${favorites.map((r, i) => card(r, { featured: i === 0, eyebrow: r.id === suggested ? 'Vorschlag für jetzt' : '' })).join('')}
+      </div>` : ''}
+
+    ${suggestion ? `
+      <h2 class="section-title">${favorites.length ? 'Vorschlag für jetzt' : 'Routinen'}</h2>
+      <div class="routine-list">${card(suggestion, { featured: !favorites.length, eyebrow: favorites.length ? '' : 'Vorschlag für jetzt' })}</div>` : ''}
+
+    ${others.length ? `
+      <h2 class="section-title">${favorites.length || suggestion ? 'Weitere Routinen' : 'Routinen'}</h2>
+      ${favorites.length ? '' : '<p class="muted fav-tip">Tippe auf das Herz, um Routinen als Favoriten ganz oben anzuzeigen.</p>'}
+      <div class="routine-list">${others.map((r) => card(r)).join('')}</div>` : ''}`;
   mountFigures();
 }
 
@@ -372,6 +395,13 @@ view.addEventListener('click', (e) => {
     const days = store.getSettings().reminderDays;
     store.saveSettings({ reminderDays: days.includes(day) ? days.filter((d) => d !== day) : [...days, day] });
     renderSettings();
+  }
+  if (t.dataset.fav) {
+    const favs = store.getSettings().favoriteRoutines;
+    const id = t.dataset.fav;
+    store.saveSettings({ favoriteRoutines: favs.includes(id) ? favs.filter((f) => f !== id) : [...favs, id] });
+    renderToday();
+    view.querySelector(`[data-fav="${id}"]`)?.focus();
   }
   if (t.dataset.act === 'dismiss-install') { store.saveSettings({ installHintDismissed: true }); renderToday(); }
   if (t.dataset.act === 'ics') downloadReminder();

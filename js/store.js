@@ -10,6 +10,7 @@ export const DEFAULT_SETTINGS = {
   reminderTime: '07:30',
   reminderDays: [1, 2, 3, 4, 5], // 0 = Sonntag … 6 = Samstag
   installHintDismissed: false,
+  favoriteRoutines: [], // Routinen-IDs in der Reihenfolge, in der sie markiert wurden
 };
 
 function read(key, fallback) {
