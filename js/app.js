@@ -102,24 +102,43 @@ function filterExercises(value) {
   return EXERCISES.filter((e) => e.area === value);
 }
 
+const filterLabel = (value) =>
+  value === 'alle' ? 'Alle Übungen' : value.startsWith('gruppe:') ? value.slice(7) : value;
+
 function renderLibrary() {
   const list = filterExercises(areaFilter);
   const count = (value) => filterExercises(value).length;
-  const option = (value, label) =>
-    `<option value="${esc(value)}" ${value === areaFilter ? 'selected' : ''}>${esc(label)} (${count(value)})</option>`;
+  const item = (value, label, cls = '') => `
+    <button class="menu-item ${cls} ${value === areaFilter ? 'active' : ''}" data-filter="${esc(value)}" ${value === areaFilter ? 'aria-current="true"' : ''}>
+      <span>${esc(label)}</span><span class="menu-count">${count(value)}</span>
+    </button>`;
   view.innerHTML = `
-    <header class="page-head"><h1>Übungen</h1><p class="muted">Alle ohne Geräte. Tippe auf eine Übung für die Anleitung.</p></header>
-    <label class="filter">
-      <span class="filter-label">Bereich</span>
-      <select id="area-filter">
-        ${option('alle', 'Alle Übungen')}
-        ${AREA_GROUPS.map(([group, areas]) => `
-          <optgroup label="${esc(group)}">
-            ${areas.length > 1 ? option(`gruppe:${group}`, `Alles: ${group}`) : ''}
-            ${areas.map((a) => option(a, a)).join('')}
-          </optgroup>`).join('')}
-      </select>
-    </label>
+    <header class="lib-head">
+      <button class="icon-btn" data-act="menu" aria-label="Bereiche öffnen" aria-expanded="false" aria-controls="area-menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="icon"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div>
+        <h1>Übungen</h1>
+        <p class="muted">${esc(filterLabel(areaFilter))} · ${list.length} ${list.length === 1 ? 'Übung' : 'Übungen'}</p>
+      </div>
+    </header>
+
+    <div class="menu-backdrop" data-act="menu-close" hidden></div>
+    <nav class="side-menu" id="area-menu" aria-label="Bereiche" hidden>
+      <div class="side-menu-head">
+        <strong>Bereiche</strong>
+        <button class="icon-btn small" data-act="menu-close" aria-label="Menü schließen">✕</button>
+      </div>
+      ${item('alle', 'Alle Übungen', 'menu-all')}
+      ${AREA_GROUPS.map(([group, areas]) => `
+        <div class="menu-group">
+          ${areas.length > 1
+            ? item(`gruppe:${group}`, group, 'menu-heading')
+            : `<p class="menu-heading-label">${esc(group)}</p>`}
+          ${areas.map((a) => item(a, a, 'menu-sub')).join('')}
+        </div>`).join('')}
+    </nav>
+
     <div class="ex-grid">
       ${list.map((e) => `
         <a class="card ex-card" href="#/uebung/${e.id}">
@@ -323,6 +342,7 @@ function saveFile(content, name, type) {
 function route() {
   const [, page, param] = (location.hash || '#/heute').split('/');
   window.scrollTo(0, 0);
+  document.body.classList.remove('menu-open');
   if (page === 'uebungen') renderLibrary();
   else if (page === 'uebung') renderExercise(param);
   else if (page === 'verlauf') renderHistory();
@@ -358,12 +378,41 @@ view.addEventListener('click', (e) => {
   if (t.dataset.act === 'export') saveFile(store.exportData(), `dehnroutine-${store.dayKey()}.json`, 'application/json');
 });
 
-view.addEventListener('change', (e) => {
-  if (e.target.id === 'area-filter') {
-    areaFilter = e.target.value;
-    renderLibrary();
-    view.querySelector('#area-filter')?.focus();
+// ---------- Seitenmenü der Übungen ----------
+function setMenu(open) {
+  const menu = view.querySelector('#area-menu');
+  const backdrop = view.querySelector('.menu-backdrop');
+  const toggle = view.querySelector('[data-act="menu"]');
+  if (!menu) return;
+  toggle.setAttribute('aria-expanded', String(open));
+  document.body.classList.toggle('menu-open', open);
+  if (open) {
+    menu.hidden = backdrop.hidden = false;
+    requestAnimationFrame(() => { menu.classList.add('open'); backdrop.classList.add('open'); });
+    (menu.querySelector('.menu-item.active') || menu.querySelector('.menu-item'))?.focus();
+  } else {
+    menu.classList.remove('open');
+    backdrop.classList.remove('open');
+    setTimeout(() => { menu.hidden = backdrop.hidden = true; }, 220);
+    toggle.focus();
   }
+}
+
+view.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-act="menu"], [data-act="menu-close"], [data-filter]');
+  if (!t) return;
+  if (t.dataset.act === 'menu') setMenu(true);
+  else if (t.dataset.act === 'menu-close') setMenu(false);
+  else {
+    areaFilter = t.dataset.filter;
+    document.body.classList.remove('menu-open');
+    renderLibrary();
+    view.querySelector('[data-act="menu"]')?.focus();
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.body.classList.contains('menu-open')) setMenu(false);
 });
 
 window.addEventListener('hashchange', route);

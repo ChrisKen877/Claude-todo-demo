@@ -131,18 +131,42 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   border: 1px solid var(--border); background: var(--surface); cursor: pointer; font-size: 14px; font-weight: 500;
 }
 .chip.active { background: var(--text); color: var(--bg); border-color: var(--text); }
-.filter { display: flex; flex-direction: column; gap: 6px; }
-.filter-label { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
-.filter select {
-  appearance: none; -webkit-appearance: none;
-  width: 100%; min-height: 48px; padding: 10px 44px 10px 16px;
-  border: 1px solid var(--border); border-radius: 14px;
-  background-color: var(--surface);
-  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
-  background-position: calc(100% - 22px) 50%, calc(100% - 16px) 50%;
-  background-size: 6px 6px; background-repeat: no-repeat;
-  font-size: 17px; font-weight: 600; cursor: pointer;
+/* Übungen: Kopf mit Menüknopf und Seitenmenü */
+.lib-head { display: flex; align-items: center; gap: 14px; }
+.lib-head .muted { margin-top: 2px; }
+body.menu-open { overflow: hidden; }
+.side-menu[hidden], .menu-backdrop[hidden] { display: none; }
+.menu-backdrop {
+  position: fixed; inset: 0; z-index: 30;
+  background: rgba(10, 16, 14, 0.4); opacity: 0; transition: opacity 0.2s ease;
 }
+.menu-backdrop.open { opacity: 1; }
+.side-menu {
+  position: fixed; top: 0; bottom: 0; left: 0; z-index: 31;
+  width: min(82vw, 320px); overflow-y: auto;
+  padding: calc(env(safe-area-inset-top) + 16px) 12px calc(env(safe-area-inset-bottom) + 24px) calc(env(safe-area-inset-left) + 12px);
+  background: var(--surface); border-right: 1px solid var(--border);
+  box-shadow: 8px 0 32px rgba(0, 0, 0, 0.18);
+  transform: translateX(-100%); transition: transform 0.22s ease;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.side-menu.open { transform: none; }
+.side-menu-head { display: flex; align-items: center; justify-content: space-between; padding: 0 4px 10px 8px; font-size: 20px; }
+.menu-group { display: flex; flex-direction: column; gap: 2px; padding-top: 12px; margin-top: 8px; border-top: 1px solid var(--border); }
+.menu-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  width: 100%; min-height: 44px; padding: 10px 12px; border: 0; border-radius: 12px;
+  background: none; text-align: left; font-size: 16px; cursor: pointer;
+}
+.menu-item:hover { background: var(--surface-2); }
+.menu-item.active { background: var(--accent-soft); color: var(--accent-strong); font-weight: 600; }
+.menu-all, .menu-heading { font-weight: 700; }
+.menu-heading { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); min-height: 36px; }
+.menu-heading.active { color: var(--accent-strong); }
+.menu-heading-label { margin: 0; padding: 8px 12px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.menu-sub { padding-left: 20px; }
+.menu-count { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; font-weight: 500; }
+@media (prefers-reduced-motion: reduce) { .side-menu, .menu-backdrop { transition: none; } }
 .ex-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 @media (min-width: 520px) { .ex-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .ex-card { text-decoration: none; display: flex; flex-direction: column; gap: 4px; padding: 10px 10px 14px; }
