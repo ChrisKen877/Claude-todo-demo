@@ -81,14 +81,45 @@ function renderToday() {
 }
 
 // ---------- Übungen ----------
-let areaFilter = 'Alle';
+// Bereiche fürs Dropdown, gruppiert nach Trainingsart. Jede Gruppe ist auch als Ganzes wählbar.
+const AREA_GROUPS = [
+  ['Dehnen', ['Nacken', 'Schultern & Brust', 'Rücken', 'Hüfte', 'Beine']],
+  ['Kräftigen', ['Rumpf']],
+  ['Lockern & Entspannen', ['Lockerung', 'Lymphe']],
+];
+// Bereiche, die in keiner Gruppe stehen, landen unter „Weitere“.
+const grouped = new Set(AREA_GROUPS.flatMap(([, areas]) => areas));
+const extraAreas = AREAS.filter((a) => !grouped.has(a));
+if (extraAreas.length) AREA_GROUPS.push(['Weitere', extraAreas]);
+
+let areaFilter = 'alle';
+function filterExercises(value) {
+  if (value === 'alle') return EXERCISES;
+  if (value.startsWith('gruppe:')) {
+    const areas = AREA_GROUPS.find(([name]) => name === value.slice(7))?.[1] || [];
+    return EXERCISES.filter((e) => areas.includes(e.area));
+  }
+  return EXERCISES.filter((e) => e.area === value);
+}
+
 function renderLibrary() {
-  const list = areaFilter === 'Alle' ? EXERCISES : EXERCISES.filter((e) => e.area === areaFilter);
+  const list = filterExercises(areaFilter);
+  const count = (value) => filterExercises(value).length;
+  const option = (value, label) =>
+    `<option value="${esc(value)}" ${value === areaFilter ? 'selected' : ''}>${esc(label)} (${count(value)})</option>`;
   view.innerHTML = `
     <header class="page-head"><h1>Übungen</h1><p class="muted">Alle ohne Geräte. Tippe auf eine Übung für die Anleitung.</p></header>
-    <div class="chips" role="group" aria-label="Nach Körperbereich filtern">
-      ${['Alle', ...AREAS].map((a) => `<button class="chip ${a === areaFilter ? 'active' : ''}" data-area="${esc(a)}" aria-pressed="${a === areaFilter}">${esc(a)}</button>`).join('')}
-    </div>
+    <label class="filter">
+      <span class="filter-label">Bereich</span>
+      <select id="area-filter">
+        ${option('alle', 'Alle Übungen')}
+        ${AREA_GROUPS.map(([group, areas]) => `
+          <optgroup label="${esc(group)}">
+            ${areas.length > 1 ? option(`gruppe:${group}`, `Alles: ${group}`) : ''}
+            ${areas.map((a) => option(a, a)).join('')}
+          </optgroup>`).join('')}
+      </select>
+    </label>
     <div class="ex-grid">
       ${list.map((e) => `
         <a class="card ex-card" href="#/uebung/${e.id}">
@@ -314,7 +345,6 @@ view.addEventListener('click', (e) => {
     const ex = getExercise(t.dataset.single);
     startRoutine({ id: `einzel-${ex.id}`, name: ex.name, exercises: [ex.id] });
   }
-  if (t.dataset.area) { areaFilter = t.dataset.area; renderLibrary(); }
   if (t.dataset.month) { monthOffset += Number(t.dataset.month); renderHistory(); }
   if (t.dataset.delete && confirm('Diesen Eintrag löschen?')) { store.deleteSession(t.dataset.delete); renderHistory(); }
   if (t.dataset.day) {
@@ -326,6 +356,14 @@ view.addEventListener('click', (e) => {
   if (t.dataset.act === 'dismiss-install') { store.saveSettings({ installHintDismissed: true }); renderToday(); }
   if (t.dataset.act === 'ics') downloadReminder();
   if (t.dataset.act === 'export') saveFile(store.exportData(), `dehnroutine-${store.dayKey()}.json`, 'application/json');
+});
+
+view.addEventListener('change', (e) => {
+  if (e.target.id === 'area-filter') {
+    areaFilter = e.target.value;
+    renderLibrary();
+    view.querySelector('#area-filter')?.focus();
+  }
 });
 
 window.addEventListener('hashchange', route);
