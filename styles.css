@@ -12,17 +12,6 @@
   --done: #2f8f83;
   --warn: #e0663f;
 
-  /* Illustration */
-  --skin: #f1c19c;
-  --skin-far: #d69f7b;
-  --hair: #3a2a22;
-  --shirt: #2f8f83;
-  --shirt-far: #1f645d;
-  --pants: #37465e;
-  --pants-far: #27334a;
-  --shoe: #1f2630;
-  --mat: #c9e0d9;
-  --glow: #ff6a3d;
 
   --radius: 18px;
   --shadow: 0 1px 2px rgba(20, 30, 25, 0.06), 0 6px 20px rgba(20, 30, 25, 0.06);
@@ -42,12 +31,6 @@
     --accent-soft: #1d3632;
     --on-accent: #0c1513;
     --done: #4fb8a9;
-    --shirt: #3aa596;
-    --shirt-far: #26756b;
-    --pants: #5a6d8c;
-    --pants-far: #3e4d66;
-    --shoe: #0c0f12;
-    --mat: #2a3b36;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     color-scheme: dark;
   }
@@ -134,7 +117,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 /* Routinen */
 .routine-list { display: flex; flex-direction: column; gap: 12px; }
 .routine { display: flex; gap: 14px; align-items: center; }
-.routine-figure { flex: 0 0 96px; aspect-ratio: 1; background: var(--surface-2); border-radius: 14px; }
+.routine-figure { flex: 0 0 96px; aspect-ratio: 1; background: var(--surface-2); border-radius: 14px; overflow: hidden; }
 .routine.featured .routine-figure { flex-basis: 120px; }
 .routine-body { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; min-width: 0; }
 .routine-body h3 { font-size: 18px; }
@@ -153,38 +136,16 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .ex-card { text-decoration: none; display: flex; flex-direction: column; gap: 4px; padding: 10px 10px 14px; }
 .ex-card h3 { font-size: 15px; padding: 0 4px; }
 .ex-card .meta { font-size: 12px; padding: 0 4px; }
-.ex-figure { aspect-ratio: 1; background: var(--surface-2); border-radius: 12px; margin-bottom: 6px; }
+.ex-figure { aspect-ratio: 1; background: var(--surface-2); border-radius: 12px; margin-bottom: 6px; overflow: hidden; }
 
 /* Detail */
 .back { text-decoration: none; color: var(--accent); font-weight: 600; align-self: flex-start; padding: 6px 0; }
-.detail-figure { aspect-ratio: 1; max-height: 46vh; padding: 0; background: var(--surface-2); align-self: center; width: 100%; }
+.detail-figure { aspect-ratio: 1; width: min(100%, 46vh); padding: 0; overflow: hidden; background: var(--surface-2); align-self: center; }
 .steps, .mistakes { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; }
 .mistakes li::marker { color: var(--warn); }
 
 /* Figur */
-.figure { width: 100%; height: 100%; display: block; overflow: visible; }
-.figure path, .figure polyline { fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.fig-mat { fill: var(--mat); }
-.fig-shirt { stroke: var(--shirt); }
-.fig-shirt.far { stroke: var(--shirt-far); }
-.fig-skin { stroke: var(--skin); }
-.fig-skin.far { stroke: var(--skin-far); }
-.fig-skin-fill { fill: var(--skin); }
-.fig-skin-fill.far { fill: var(--skin-far); }
-.fig-pants { stroke: var(--pants); }
-.fig-pants.far { stroke: var(--pants-far); }
-.fig-shoe { stroke: var(--shoe); stroke-width: 7; }
-.fig-hair { fill: var(--hair) !important; stroke: var(--hair); stroke-width: 1; }
-.fig-glow { stroke: var(--glow); stroke-width: 22; opacity: 0; }
-.fig-w-torso { stroke-width: 19; }
-.fig-w-leg { stroke-width: 12; }
-.fig-w-arm { stroke-width: 9.5; }
-.fig-w-fore { stroke-width: 7.5; }
-.fig-w-neck { stroke-width: 7; }
-.front .fig-shirt.far { stroke: var(--shirt); }
-.front .fig-skin.far { stroke: var(--skin); }
-.front .fig-skin-fill.far { fill: var(--skin); }
-.front .fig-pants.far { stroke: var(--pants); }
+.figure { width: 100%; height: 100%; display: block; border-radius: inherit; }
 
 .fig-media { width: 100%; height: 100%; display: block; object-fit: cover; border-radius: inherit; }
 .tr-figure { border-radius: 18px; overflow: hidden; }
