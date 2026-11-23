@@ -1,6 +1,6 @@
 // Lokale Datenhaltung (bleibt auf dem Gerät) und Statistiken.
 
-const KEYS = { sessions: 'dehnen.sessions.v1', settings: 'dehnen.settings.v1' };
+const KEYS = { sessions: 'dehnen.sessions.v1', settings: 'dehnen.settings.v1', routines: 'dehnen.routines.v1' };
 
 export const DEFAULT_SETTINGS = {
   rest: 10,
@@ -39,6 +39,22 @@ export function addSession(session) {
   const all = getSessions();
   all.push(session);
   return write(KEYS.sessions, all);
+}
+
+// Eigene Routinen: { id, name, custom: true, exercises: [{ id, seconds }] }
+export const getCustomRoutines = () => read(KEYS.routines, []);
+
+export function saveCustomRoutine(routine) {
+  const all = getCustomRoutines();
+  const i = all.findIndex((r) => r.id === routine.id);
+  if (i >= 0) all[i] = routine;
+  else all.push(routine);
+  return write(KEYS.routines, all);
+}
+
+export function deleteCustomRoutine(id) {
+  write(KEYS.routines, getCustomRoutines().filter((r) => r.id !== id));
+  saveSettings({ favoriteRoutines: getSettings().favoriteRoutines.filter((f) => f !== id) });
 }
 
 export function deleteSession(id) {
@@ -92,7 +108,7 @@ export function computeStats(sessions = getSessions()) {
 }
 
 export function exportData() {
-  return JSON.stringify({ app: 'dehnroutine', version: 1, sessions: getSessions(), settings: getSettings() }, null, 2);
+  return JSON.stringify({ app: 'dehnroutine', version: 1, sessions: getSessions(), settings: getSettings(), routines: getCustomRoutines() }, null, 2);
 }
 
 export function importData(text) {
@@ -102,5 +118,6 @@ export function importData(text) {
   const merged = [...getSessions(), ...data.sessions.filter((s) => s && s.id && !known.has(s.id))];
   write(KEYS.sessions, merged);
   if (data.settings) saveSettings(data.settings);
+  if (Array.isArray(data.routines)) data.routines.filter((r) => r && r.id && r.custom).forEach(saveCustomRoutine);
   return merged.length;
 }

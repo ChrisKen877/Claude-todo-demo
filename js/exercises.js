@@ -730,16 +730,23 @@ export const getExercise = (id) => EXERCISES.find((e) => e.id === id);
 export const getRoutine = (id) => ROUTINES.find((r) => r.id === id);
 
 // Ablauf einer Routine: beidseitige Übungen werden zu zwei Schritten.
+// Einträge einer Routine sind entweder eine Übungs-ID oder (bei eigenen Routinen)
+// { id, seconds } mit individueller Dauer.
+export const entryId = (entry) => (typeof entry === 'string' ? entry : entry.id);
+export const entrySeconds = (entry) =>
+  (typeof entry === 'object' && entry.seconds) || getExercise(entryId(entry))?.seconds || 30;
+
 export function buildSteps(routine) {
   const steps = [];
-  for (const id of routine.exercises) {
-    const ex = getExercise(id);
+  for (const entry of routine.exercises) {
+    const ex = getExercise(entryId(entry));
     if (!ex) continue;
+    const seconds = entrySeconds(entry);
     if (ex.bilateral) {
-      steps.push({ ex, side: 1, seconds: ex.seconds });
-      steps.push({ ex, side: 2, seconds: ex.seconds });
+      steps.push({ ex, side: 1, seconds });
+      steps.push({ ex, side: 2, seconds });
     } else {
-      steps.push({ ex, side: 0, seconds: ex.seconds });
+      steps.push({ ex, side: 0, seconds });
     }
   }
   return steps;

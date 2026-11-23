@@ -1,4 +1,4 @@
-import { EXERCISES, ROUTINES, AREAS, getExercise, getRoutine, routineSeconds } from './exercises.js';
+import { EXERCISES, ROUTINES, AREAS, getExercise, getRoutine, routineSeconds, entryId, entrySeconds } from './exercises.js';
 import { Figure } from './figure.js';
 import { Trainer } from './trainer.js';
 import * as store from './store.js';
@@ -21,6 +21,16 @@ function mountFigures(root = view) {
   });
 }
 
+// Feste und eigene Routinen
+const findRoutine = (id) => getRoutine(id) || store.getCustomRoutines().find((r) => r.id === id);
+
+// Beschreibung eigener Routinen aus den enthaltenen Bereichen ableiten.
+function routineDescription(r) {
+  if (!r.custom) return r.description;
+  const areas = [...new Set(r.exercises.map((e) => getExercise(entryId(e))?.area).filter(Boolean))];
+  return `Eigene Routine · ${areas.join(', ')}`;
+}
+
 function startRoutine(routine) {
   trainer.start(routine);
 }
@@ -38,9 +48,10 @@ function renderToday() {
 
   // Reihenfolge: Favoriten (in der Reihenfolge, in der sie markiert wurden), dann der
   // Vorschlag für die Tageszeit (falls nicht schon Favorit), dann alle übrigen Routinen.
-  const favIds = settings.favoriteRoutines.filter((id) => getRoutine(id));
-  const favorites = favIds.map(getRoutine);
+  const favIds = settings.favoriteRoutines.filter((id) => findRoutine(id));
+  const favorites = favIds.map(findRoutine);
   const suggestion = favIds.includes(suggested) ? null : getRoutine(suggested);
+  const customs = store.getCustomRoutines().filter((r) => !favIds.includes(r.id));
   const others = ROUTINES.filter((r) => !favIds.includes(r.id) && r.id !== suggested);
 
   const heart = '<svg viewBox="0 0 24 24" aria-hidden="true" class="icon"><path d="M12 20s-7-4.4-9.2-8.6C1.2 8.3 3 4.5 6.6 4.5c2.1 0 3.4 1.2 5.4 3.3 2-2.1 3.3-3.3 5.4-3.3 3.6 0 5.4 3.8 3.8 6.9C19 15.6 12 20 12 20z"/></svg>';
@@ -48,13 +59,16 @@ function renderToday() {
     const fav = favIds.includes(r.id);
     return `
       <article class="card routine ${featured ? 'featured' : ''}">
-        <div class="routine-figure" data-figure="${r.exercises[0]}" ${featured ? 'data-animate="true"' : ''}></div>
+        <div class="routine-figure" data-figure="${entryId(r.exercises[0])}" ${featured ? 'data-animate="true"' : ''}></div>
         <div class="routine-body">
           ${eyebrow ? `<p class="eyebrow accent">${esc(eyebrow)}</p>` : ''}
           <h3>${esc(r.name)}</h3>
-          <p class="muted">${esc(r.description)}</p>
+          <p class="muted">${esc(routineDescription(r))}</p>
           <p class="meta">${minutes(routineSeconds(r, settings.rest))} · ${r.exercises.length} Übungen</p>
-          <button class="btn ${featured ? 'primary' : ''}" data-start="${r.id}">Starten</button>
+          <div class="btn-row tight">
+            <button class="btn ${featured ? 'primary' : ''}" data-start="${r.id}">Starten</button>
+            ${r.custom ? `<a class="btn ghost" href="#/routine/${esc(r.id)}">Bearbeiten</a>` : ''}
+          </div>
         </div>
         <button class="fav-btn ${fav ? 'active' : ''}" data-fav="${r.id}" aria-pressed="${fav}"
           aria-label="${esc(r.name)} ${fav ? 'aus den Favoriten entfernen' : 'zu den Favoriten hinzufügen'}">${heart}</button>
@@ -95,6 +109,13 @@ function renderToday() {
     ${suggestion ? `
       <h2 class="section-title">${favorites.length ? 'Vorschlag für jetzt' : 'Routinen'}</h2>
       <div class="routine-list">${card(suggestion, { featured: !favorites.length, eyebrow: favorites.length ? '' : 'Vorschlag für jetzt' })}</div>` : ''}
+
+    <h2 class="section-title">Meine Routinen</h2>
+    ${customs.length ? `<div class="routine-list">${customs.map((r) => card(r)).join('')}</div>` : ''}
+    <a class="card create-routine" href="#/routine/neu">
+      <span class="create-plus" aria-hidden="true">+</span>
+      <span><strong>Eigene Routine erstellen</strong><br><span class="muted">Übungen auswählen, Reihenfolge und Dauer festlegen</span></span>
+    </a>
 
     ${others.length ? `
       <h2 class="section-title">${favorites.length || suggestion ? 'Weitere Routinen' : 'Routinen'}</h2>
@@ -361,6 +382,178 @@ function saveFile(content, name, type) {
   setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 
+// ---------- Eigene Routinen: Editor ----------
+const STEP_SECONDS = 5;
+const MIN_SECONDS = 10;
+const MAX_SECONDS = 180;
+let draft = null; // Routine, die gerade bearbeitet wird
+let draftIsNew = true;
+
+function openEditor(param) {
+  if (param === 'neu') {
+    draft = { id: `eigen-${Date.now().toString(36)}`, name: '', custom: true, exercises: [] };
+    draftIsNew = true;
+  } else {
+    const existing = store.getCustomRoutines().find((r) => r.id === param);
+    if (!existing) return (location.hash = '#/heute');
+    // Ältere Einträge (nur ID) in { id, seconds } umwandeln
+    draft = { ...existing, exercises: existing.exercises.map((e) => ({ id: entryId(e), seconds: entrySeconds(e) })) };
+    draftIsNew = false;
+  }
+  renderEditor();
+}
+
+function renderEditor() {
+  view.innerHTML = `
+    <a class="back" href="#/heute">‹ Heute</a>
+    <header class="page-head"><h1>${draftIsNew ? 'Neue Routine' : 'Routine bearbeiten'}</h1></header>
+    <label class="field-block" for="routine-name">
+      <span class="filter-label">Name</span>
+      <input id="routine-name" type="text" maxlength="40" autocomplete="off" placeholder="z. B. Mein Morgen" value="${esc(draft.name)}">
+    </label>
+    <div id="ed-body"></div>
+    <div class="editor-actions">
+      <button class="btn primary wide" data-ed="save">Speichern</button>
+      <p class="note" id="ed-hint"></p>
+      ${draftIsNew ? '' : '<button class="btn danger wide" data-ed="delete">Routine löschen</button>'}
+    </div>
+    <div class="menu-backdrop" data-ed="pick-close" hidden></div>
+    <section class="sheet" id="ed-picker" aria-label="Übungen auswählen" hidden></section>`;
+  renderEditorBody();
+}
+
+// Übungsliste, Gesamtdauer und Speichern-Zustand (ohne das Namensfeld neu zu zeichnen).
+function renderEditorBody() {
+  const rest = store.getSettings().rest;
+  const n = draft.exercises.length;
+  const total = n ? routineSeconds(draft, rest) : 0;
+  view.querySelector('#ed-body').innerHTML = `
+    <div class="editor-head">
+      <h2 class="section-title">Übungen</h2>
+      <span class="meta">${n ? `${n} ${n === 1 ? 'Übung' : 'Übungen'} · ${minutes(total)}` : 'noch keine'}</span>
+    </div>
+    ${n ? `<ol class="ed-list">${draft.exercises.map((entry, i) => {
+      const ex = getExercise(entry.id);
+      if (!ex) return '';
+      return `
+        <li class="card ed-row">
+          <div class="ed-thumb" data-figure="${ex.id}"></div>
+          <div class="ed-info">
+            <strong>${esc(ex.name)}</strong>
+            <span class="meta">${esc(ex.area)}${ex.bilateral ? ' · je Seite' : ''}</span>
+            <div class="stepper" role="group" aria-label="Dauer ${esc(ex.name)}">
+              <button data-ed="minus" data-i="${i}" aria-label="${STEP_SECONDS} Sekunden weniger" ${entry.seconds <= MIN_SECONDS ? 'disabled' : ''}>−</button>
+              <span>${entry.seconds} s</span>
+              <button data-ed="plus" data-i="${i}" aria-label="${STEP_SECONDS} Sekunden mehr" ${entry.seconds >= MAX_SECONDS ? 'disabled' : ''}>+</button>
+            </div>
+          </div>
+          <div class="ed-move">
+            <button class="icon-btn small" data-ed="up" data-i="${i}" aria-label="Nach oben" ${i === 0 ? 'disabled' : ''}>↑</button>
+            <button class="icon-btn small" data-ed="down" data-i="${i}" aria-label="Nach unten" ${i === n - 1 ? 'disabled' : ''}>↓</button>
+            <button class="icon-btn small" data-ed="remove" data-i="${i}" aria-label="${esc(ex.name)} entfernen">✕</button>
+          </div>
+        </li>`;
+    }).join('')}</ol>` : '<p class="muted empty-state">Füge Übungen hinzu – die Reihenfolge kannst du danach mit den Pfeilen ändern.</p>'}
+    <button class="btn wide" data-ed="pick">+ Übungen hinzufügen</button>`;
+  mountFigures(view.querySelector('#ed-body'));
+  updateEditorSave();
+}
+
+function updateEditorSave() {
+  const missing = [!draft.name.trim() && 'ein Name', !draft.exercises.length && 'mindestens eine Übung'].filter(Boolean);
+  view.querySelector('[data-ed="save"]').disabled = missing.length > 0;
+  view.querySelector('#ed-hint').textContent = missing.length ? `Zum Speichern fehlt noch: ${missing.join(' und ')}.` : '';
+}
+
+function renderPicker() {
+  const ids = new Set(draft.exercises.map((e) => e.id));
+  const sheet = view.querySelector('#ed-picker');
+  sheet.innerHTML = `
+    <div class="sheet-head">
+      <strong>Übungen auswählen</strong>
+      <button class="btn primary" data-ed="pick-close">Fertig</button>
+    </div>
+    <p class="muted sheet-tip">Tippe an, um eine Übung hinzuzufügen oder wieder zu entfernen.</p>
+    ${AREA_GROUPS.map(([group, areas]) => `
+      <h3 class="menu-heading-label">${esc(group)}</h3>
+      ${EXERCISES.filter((e) => areas.includes(e.area)).map((e) => `
+        <button class="pick-row ${ids.has(e.id) ? 'active' : ''}" data-ed="toggle" data-id="${e.id}" aria-pressed="${ids.has(e.id)}">
+          <span class="pick-thumb" data-figure="${e.id}"></span>
+          <span class="pick-text"><strong>${esc(e.name)}</strong><span class="meta">${esc(e.area)} · ${e.seconds} s${e.bilateral ? ' je Seite' : ''}</span></span>
+          <span class="pick-check" aria-hidden="true">${ids.has(e.id) ? '✓' : '+'}</span>
+        </button>`).join('')}`).join('')}`;
+  mountFigures(sheet);
+}
+
+function setPicker(open) {
+  const sheet = view.querySelector('#ed-picker');
+  const backdrop = view.querySelector('.menu-backdrop');
+  document.body.classList.toggle('menu-open', open);
+  if (open) {
+    renderPicker();
+    sheet.hidden = backdrop.hidden = false;
+    requestAnimationFrame(() => { sheet.classList.add('open'); backdrop.classList.add('open'); });
+    sheet.querySelector('[data-ed="pick-close"]')?.focus();
+  } else {
+    sheet.classList.remove('open');
+    backdrop.classList.remove('open');
+    setTimeout(() => { sheet.hidden = backdrop.hidden = true; }, 220);
+    view.querySelector('[data-ed="pick"]')?.focus();
+  }
+}
+
+view.addEventListener('input', (e) => {
+  if (e.target.id === 'routine-name' && draft) {
+    draft.name = e.target.value;
+    updateEditorSave();
+  }
+});
+
+view.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-ed]');
+  if (!t || !draft) return;
+  const i = Number(t.dataset.i);
+  const list = draft.exercises;
+  switch (t.dataset.ed) {
+    case 'minus': list[i].seconds = Math.max(MIN_SECONDS, list[i].seconds - STEP_SECONDS); break;
+    case 'plus': list[i].seconds = Math.min(MAX_SECONDS, list[i].seconds + STEP_SECONDS); break;
+    case 'up': [list[i - 1], list[i]] = [list[i], list[i - 1]]; break;
+    case 'down': [list[i + 1], list[i]] = [list[i], list[i + 1]]; break;
+    case 'remove': list.splice(i, 1); break;
+    case 'pick': return setPicker(true);
+    case 'pick-close': return setPicker(false);
+    case 'toggle': {
+      const id = t.dataset.id;
+      const at = list.findIndex((x) => x.id === id);
+      if (at >= 0) list.splice(at, 1);
+      else list.push({ id, seconds: getExercise(id).seconds });
+      const on = at < 0;
+      t.classList.toggle('active', on);
+      t.setAttribute('aria-pressed', String(on));
+      t.querySelector('.pick-check').textContent = on ? '✓' : '+';
+      break;
+    }
+    case 'save':
+      draft.name = draft.name.trim();
+      store.saveCustomRoutine(draft);
+      draft = null;
+      location.hash = '#/heute';
+      return;
+    case 'delete':
+      if (!confirm(`„${draft.name || 'Routine'}“ wirklich löschen?`)) return;
+      store.deleteCustomRoutine(draft.id);
+      draft = null;
+      location.hash = '#/heute';
+      return;
+    default: return;
+  }
+  // Fokus nach dem Neuzeichnen an derselben Stelle halten (Tastatur/VoiceOver)
+  const focusSel = ['up', 'down', 'minus', 'plus'].includes(t.dataset.ed)
+    ? `[data-ed="${t.dataset.ed}"][data-i="${t.dataset.ed === 'up' ? i - 1 : t.dataset.ed === 'down' ? i + 1 : i}"]` : null;
+  renderEditorBody();
+  if (focusSel) view.querySelector(focusSel)?.focus();
+});
+
 // ---------- Navigation ----------
 function route() {
   const [, page, param] = (location.hash || '#/heute').split('/');
@@ -368,10 +561,11 @@ function route() {
   document.body.classList.remove('menu-open');
   if (page === 'uebungen') renderLibrary();
   else if (page === 'uebung') renderExercise(param);
+  else if (page === 'routine') openEditor(param);
   else if (page === 'verlauf') renderHistory();
   else if (page === 'einstellungen') renderSettings();
   else renderToday();
-  const tab = page === 'uebung' ? 'uebungen' : page || 'heute';
+  const tab = page === 'uebung' ? 'uebungen' : page === 'routine' ? 'heute' : page || 'heute';
   document.querySelectorAll('.tabbar a').forEach((a) => {
     const active = a.dataset.tab === tab;
     a.classList.toggle('active', active);
@@ -383,7 +577,7 @@ function route() {
 view.addEventListener('click', (e) => {
   const t = e.target.closest('button');
   if (!t) return;
-  if (t.dataset.start) startRoutine(getRoutine(t.dataset.start));
+  if (t.dataset.start) startRoutine(findRoutine(t.dataset.start));
   if (t.dataset.single) {
     const ex = getExercise(t.dataset.single);
     startRoutine({ id: `einzel-${ex.id}`, name: ex.name, exercises: [ex.id] });
@@ -442,7 +636,9 @@ view.addEventListener('click', (e) => {
 });
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && document.body.classList.contains('menu-open')) setMenu(false);
+  if (e.key !== 'Escape' || !document.body.classList.contains('menu-open')) return;
+  if (view.querySelector('#ed-picker:not([hidden])')) setPicker(false);
+  else setMenu(false);
 });
 
 window.addEventListener('hashchange', route);
