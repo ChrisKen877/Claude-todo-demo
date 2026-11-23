@@ -125,11 +125,18 @@ function renderExercise(id) {
       <p>${esc(e.easier)}</p>
     </section>
     <section class="card">
-      <h2 class="card-title">Dehnt</h2>
+      <h2 class="card-title">Wirkt auf</h2>
       <p>${esc(e.muscles)}</p>
     </section>
+    ${e.note === 'lymph' ? `
+    <section class="card hint">
+      <div>
+        <strong>Hinweis</strong>
+        <p>Bei akuten Entzündungen, Fieber, Thrombose, Herzschwäche oder nach Operationen bitte vorher ärztlich abklären. Die Übungen ersetzen keine medizinische Lymphdrainage.</p>
+      </div>
+    </section>` : ''}
     <button class="btn primary wide" data-single="${e.id}">Diese Übung jetzt machen</button>
-    <p class="note">Dehnen soll ziehen, nicht schmerzen. Bei Schmerzen sofort lösen.</p>`;
+    <p class="note">Übungen sollen sich gut anfühlen. Bei Schmerzen sofort aufhören.</p>`;
   mountFigures();
 }
 

@@ -134,7 +134,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .ex-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 @media (min-width: 520px) { .ex-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .ex-card { text-decoration: none; display: flex; flex-direction: column; gap: 4px; padding: 10px 10px 14px; }
-.ex-card h3 { font-size: 15px; padding: 0 4px; }
+.ex-card h3 { font-size: 15px; padding: 0 4px; hyphens: auto; overflow-wrap: anywhere; }
 .ex-card .meta { font-size: 12px; padding: 0 4px; }
 .ex-figure { aspect-ratio: 1; background: var(--surface-2); border-radius: 12px; margin-bottom: 6px; overflow: hidden; }
 
