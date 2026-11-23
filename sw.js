@@ -1,6 +1,6 @@
 // Service Worker: hält die App offline verfügbar.
 // Bei Änderungen an den Dateien VERSION erhöhen, damit Geräte das Update laden.
-const VERSION = 'dehnroutine-v9';
+const VERSION = 'dehnroutine-v10';
 const FILES = [
   './',
   './index.html',
@@ -11,7 +11,7 @@ const FILES = [
   './js/figure.js',
   './js/store.js',
   './js/trainer.js',
-  './icons/icon.svg',
+  './icons/favicon.png',
   './icons/icon-180.png',
   './icons/icon-192.png',
   './icons/icon-512.png',
