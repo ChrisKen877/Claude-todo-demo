@@ -32,7 +32,7 @@ export const EXERCISES = [
       'Die Hand derselben Seite legt sich auf den Kopf und gibt nur leichten Zug.',
       'Die andere Schulter aktiv nach unten schieben und ruhig atmen.',
     ],
-    mistakes: ['Schulter zum Ohr hochziehen', 'Ruckartig mit der Hand ziehen', 'Kopf nach vorn kippen statt zur Seite'],
+    mistakes: ['Nicht die Schulter zum Ohr hochziehen', 'Nicht ruckartig mit der Hand ziehen', 'Den Kopf nicht nach vorn kippen, sondern zur Seite neigen'],
     easier: 'Ohne Hand – nur das Gewicht des Kopfes wirken lassen.',
     poses: {
       a: FRONT,
@@ -56,7 +56,7 @@ export const EXERCISES = [
       'Arme gestreckt leicht nach hinten oben anheben.',
       'Brust öffnen, Blick leicht nach oben, ruhig weiteratmen.',
     ],
-    mistakes: ['Ins Hohlkreuz fallen', 'Kopf weit in den Nacken legen'],
+    mistakes: ['Nicht ins Hohlkreuz fallen', 'Den Kopf nicht weit in den Nacken legen'],
     easier: 'Hände an den unteren Rücken legen und nur die Ellbogen sanft zueinander ziehen.',
     poses: {
       a: STAND,
@@ -80,7 +80,7 @@ export const EXERCISES = [
       'Den Arm sanft zur Brust ziehen, bis du hinten in der Schulter ein Ziehen spürst.',
       'Der Oberkörper bleibt gerade nach vorn ausgerichtet.',
     ],
-    mistakes: ['Direkt auf das Ellbogengelenk drücken', 'Oberkörper mitdrehen', 'Schulter hochziehen'],
+    mistakes: ['Nicht direkt auf das Ellbogengelenk drücken', 'Den Oberkörper nicht mitdrehen', 'Die Schulter nicht hochziehen'],
     easier: 'Arm etwas tiefer führen und nur leicht heranziehen.',
     poses: {
       a: FRONT,
@@ -104,7 +104,7 @@ export const EXERCISES = [
       'Erst nach oben lang werden, dann den Oberkörper zur Seite neigen.',
       'Die untere Hand gleitet am Bein entlang, das Becken bleibt stabil.',
     ],
-    mistakes: ['Oberkörper nach vorn oder hinten drehen', 'Becken zur Seite schieben', 'Luft anhalten'],
+    mistakes: ['Den Oberkörper nicht nach vorn oder hinten drehen', 'Das Becken nicht zur Seite schieben', 'Die Luft nicht anhalten'],
     easier: 'Die obere Hand auf die Hüfte legen statt über den Kopf.',
     poses: {
       a: FRONT,
@@ -128,7 +128,7 @@ export const EXERCISES = [
       'Oberkörper und Kopf hängen lassen, Hände Richtung Boden oder Schienbeine.',
       'Zum Aufrichten die Knie beugen und Wirbel für Wirbel hochrollen.',
     ],
-    mistakes: ['Knie durchdrücken', 'Wippen, um tiefer zu kommen', 'Zu schnell aufrichten (Schwindel)'],
+    mistakes: ['Die Knie nicht durchdrücken', 'Nicht wippen, um tiefer zu kommen', 'Nicht zu schnell aufrichten (Schwindel)'],
     easier: 'Knie deutlich beugen und die Hände auf den Oberschenkeln abstützen.',
     poses: {
       a: pose(STAND, { armR: [160, 165], armL: [157, 162] }),
@@ -155,7 +155,7 @@ export const EXERCISES = [
       'Ferse Richtung Gesäß ziehen, das Knie zeigt zum Boden.',
       'Becken leicht nach vorn schieben, um die Dehnung zu verstärken.',
     ],
-    mistakes: ['Hohlkreuz machen', 'Knie nach außen wandern lassen', 'Oberkörper nach vorn kippen'],
+    mistakes: ['Kein Hohlkreuz machen', 'Das Knie nicht nach außen wandern lassen', 'Den Oberkörper nicht nach vorn kippen'],
     easier: 'In Seitenlage auf dem Boden ausführen – dann brauchst du kein Gleichgewicht.',
     poses: {
       a: STAND,
@@ -179,7 +179,7 @@ export const EXERCISES = [
       'Hände an die Hüfte, Gesäß leicht anspannen.',
       'Becken langsam nach vorn unten schieben; wer mag, streckt die Arme nach oben.',
     ],
-    mistakes: ['Vorderes Knie weit über die Zehen schieben', 'Ins Hohlkreuz fallen', 'Hinteres Knie ungepolstert auf hartem Boden'],
+    mistakes: ['Das vordere Knie nicht weit über die Zehen schieben', 'Nicht ins Hohlkreuz fallen', 'Das hintere Knie nicht ungepolstert auf harten Boden legen'],
     easier: 'Weniger tief gehen und die Hände auf dem vorderen Oberschenkel abstützen.',
     poses: {
       a: {
@@ -209,7 +209,7 @@ export const EXERCISES = [
       'Ausatmen: Rücken rund machen, Kinn zur Brust, Bauch einziehen (Katze).',
       'Fließend im eigenen Atemrhythmus wechseln.',
     ],
-    mistakes: ['Ellbogen durchdrücken', 'Zu schnell bewegen', 'Kopf in der Kuh weit überstrecken'],
+    mistakes: ['Die Ellbogen nicht durchdrücken', 'Nicht zu schnell bewegen', 'Den Kopf in der Kuh nicht weit überstrecken'],
     easier: 'Im Sitzen ausführen: Hände auf die Knie, Rücken abwechselnd rund und lang machen.',
     poses: {
       a: {
@@ -239,7 +239,7 @@ export const EXERCISES = [
       'Mit langem Rücken nach vorn ablegen, Stirn Richtung Boden.',
       'Arme bleiben lang nach vorn gestreckt, das Gesäß sinkt zu den Fersen.',
     ],
-    mistakes: ['Gesäß hebt weit von den Fersen ab', 'Schultern hochziehen'],
+    mistakes: ['Das Gesäß nicht weit von den Fersen abheben', 'Die Schultern nicht hochziehen'],
     easier: 'Knie weiter öffnen oder die Stirn auf die Fäuste legen.',
     poses: {
       a: {
@@ -269,7 +269,7 @@ export const EXERCISES = [
       'Hände an Knöchel oder Knie legen.',
       'Knie langsam Richtung Boden sinken lassen und sanft auf und ab bewegen.',
     ],
-    mistakes: ['Rücken rund machen', 'Mit Kraft auf die Knie drücken'],
+    mistakes: ['Den Rücken nicht rund machen', 'Nicht mit Kraft auf die Knie drücken'],
     easier: 'Füße weiter vom Körper weg platzieren oder auf ein Kissen setzen.',
     poses: {
       a: {
@@ -299,7 +299,7 @@ export const EXERCISES = [
       'Mit geradem Rücken aus der Hüfte nach vorn beugen.',
       'Hände ruhen an Schienbeinen oder Füßen – so weit es angenehm ist.',
     ],
-    mistakes: ['Mit rundem Rücken nach vorn ziehen', 'Wippen', 'Knie mit Gewalt durchdrücken'],
+    mistakes: ['Nicht mit rundem Rücken nach vorn ziehen', 'Nicht wippen', 'Die Knie nicht mit Gewalt durchdrücken'],
     easier: 'Knie leicht beugen oder auf ein Kissen setzen.',
     poses: {
       a: {
@@ -328,7 +328,7 @@ export const EXERCISES = [
       'Bauch und Gesäß anspannen, der Körper bildet eine gerade Linie.',
       'Ruhig weiteratmen und halten, dann die Knie ablegen.',
     ],
-    mistakes: ['Hüfte hängt durch (Hohlkreuz)', 'Po ragt nach oben', 'Luft anhalten'],
+    mistakes: ['Die Hüfte nicht durchhängen lassen (kein Hohlkreuz)', 'Den Po nicht nach oben schieben', 'Die Luft nicht anhalten'],
     easier: 'Die Knie auf der Matte lassen – Linie von Kopf bis Knie.',
   },
   {
@@ -346,7 +346,7 @@ export const EXERCISES = [
       'Hüfte anheben, bis Kopf, Becken und Füße eine Linie bilden.',
       'Halten, dann die Hüfte langsam ablegen.',
     ],
-    mistakes: ['Hüfte sinkt ab', 'Oberkörper dreht nach vorn oder hinten', 'Schulter rutscht zum Ohr'],
+    mistakes: ['Die Hüfte nicht absinken lassen', 'Den Oberkörper nicht nach vorn oder hinten drehen', 'Die Schulter nicht zum Ohr rutschen lassen'],
     easier: 'Das untere Knie gebeugt auf der Matte lassen.',
   },
   {
@@ -364,7 +364,7 @@ export const EXERCISES = [
       'Langsam einen Arm nach hinten und das gegenüberliegende Bein nach vorn strecken.',
       'Zurück zur Mitte und Seite wechseln.',
     ],
-    mistakes: ['Hohlkreuz – der Rücken hebt ab', 'Zu schnell bewegen', 'Kopf anheben'],
+    mistakes: ['Kein Hohlkreuz – den Rücken nicht abheben', 'Nicht zu schnell bewegen', 'Den Kopf nicht anheben'],
     easier: 'Nur die Beine bewegen und die Ferse zum Boden tippen.',
   },
   {
@@ -382,7 +382,7 @@ export const EXERCISES = [
       'Kurz halten – Arm, Rücken und Bein bilden eine Linie.',
       'Zurück in den Vierfüßlerstand und die Seite wechseln.',
     ],
-    mistakes: ['Becken kippt zur Seite', 'Bein zu hoch – Hohlkreuz', 'Kopf in den Nacken'],
+    mistakes: ['Das Becken nicht zur Seite kippen lassen', 'Das Bein nicht zu hoch heben (kein Hohlkreuz)', 'Den Kopf nicht in den Nacken legen'],
     easier: 'Nur den Arm oder nur das Bein abheben.',
   },
   {
@@ -400,7 +400,7 @@ export const EXERCISES = [
       'Becken anheben, bis Schultern, Hüfte und Knie eine Linie bilden.',
       'Kurz halten und Wirbel für Wirbel wieder ablegen.',
     ],
-    mistakes: ['Ins Hohlkreuz drücken', 'Knie fallen nach innen', 'Über den Nacken abstützen'],
+    mistakes: ['Nicht ins Hohlkreuz drücken', 'Die Knie nicht nach innen fallen lassen', 'Sich nicht über den Nacken abstützen'],
     easier: 'Weniger hoch heben und oben nicht halten.',
   },
   {
@@ -418,7 +418,7 @@ export const EXERCISES = [
       'Kurz halten, ruhig atmen.',
       'Langsam wieder ablegen.',
     ],
-    mistakes: ['Kopf in den Nacken legen', 'Zu hoch und ruckartig heben'],
+    mistakes: ['Den Kopf nicht in den Nacken legen', 'Nicht zu hoch und nicht ruckartig heben'],
     easier: 'Abwechselnd nur Arme oder nur Beine anheben.',
   },
   {
@@ -436,7 +436,7 @@ export const EXERCISES = [
       'Ausatmen und Kopf, Schultern und oberen Rücken anheben.',
       'Langsam wieder ablegen, der untere Rücken bleibt am Boden.',
     ],
-    mistakes: ['Mit den Händen am Kopf ziehen', 'Schwung holen', 'Kinn auf die Brust drücken'],
+    mistakes: ['Nicht mit den Händen am Kopf ziehen', 'Keinen Schwung holen', 'Das Kinn nicht auf die Brust drücken'],
     easier: 'Arme vor der Brust kreuzen und nur kurz anheben.',
   },
   {
@@ -454,7 +454,7 @@ export const EXERCISES = [
       'Dann das linke Knie.',
       'Im ruhigen Tempo abwechseln.',
     ],
-    mistakes: ['Hüfte nach oben schieben', 'Schultern hinter die Hände', 'Zu schnell'],
+    mistakes: ['Die Hüfte nicht nach oben schieben', 'Die Schultern nicht hinter die Hände verlagern', 'Nicht zu schnell werden'],
     easier: 'Hände auf eine erhöhte Fläche wie Sofa oder Stufe stützen.',
   },
 
@@ -474,7 +474,7 @@ export const EXERCISES = [
       'Den oberen Brustkorb sanft abklopfen.',
       'Knie leicht beugen und die Beine außen hinunter und innen hinauf klopfen.',
     ],
-    mistakes: ['Zu fest klopfen', 'Schultern hochziehen', 'Luft anhalten'],
+    mistakes: ['Nicht zu fest klopfen', 'Die Schultern nicht hochziehen', 'Die Luft nicht anhalten'],
     easier: 'Mit flachen Händen klopfen oder sanft ausstreichen.',
   },
   {
@@ -492,7 +492,7 @@ export const EXERCISES = [
       'Arme, Hände und Schultern locker mitschütteln lassen.',
       'Langsamer werden und zur Ruhe kommen.',
     ],
-    mistakes: ['Knie durchgestreckt', 'Verkrampfte Schultern'],
+    mistakes: ['Die Knie nicht durchstrecken', 'Die Schultern nicht verkrampfen'],
     easier: 'Nur Hände und Arme ausschütteln.',
   },
   {
@@ -510,7 +510,7 @@ export const EXERCISES = [
       'Die Arme schwingen mit und klopfen sanft an Schulter und unteren Rücken.',
       'Die Füße bleiben am Boden, zum Schluss langsam ausschwingen.',
     ],
-    mistakes: ['Arme aktiv werfen', 'Knie verdrehen', 'Zu schnell'],
+    mistakes: ['Die Arme nicht aktiv werfen', 'Die Knie nicht verdrehen', 'Nicht zu schnell werden'],
     easier: 'Kleinere Drehung, Arme hängen nur locker.',
   },
   {
@@ -528,7 +528,7 @@ export const EXERCISES = [
       'Mit gestreckten Armen zum Himmel drücken, Blick folgt den Händen, leicht auf die Zehen.',
       'Fersen senken und die Arme seitlich herabsinken lassen.',
     ],
-    mistakes: ['Hohlkreuz beim Strecken', 'Schultern hochziehen'],
+    mistakes: ['Beim Strecken nicht ins Hohlkreuz gehen', 'Die Schultern nicht hochziehen'],
     easier: 'Auf den Fersen bleiben.',
   },
   {
@@ -546,7 +546,7 @@ export const EXERCISES = [
       'Aus dem Becken wieder aufrollen – erst Becken, dann Brust, zuletzt der Kopf.',
       'Fließend wiederholen.',
     ],
-    mistakes: ['Knie durchdrücken', 'Zu tief und zu schnell'],
+    mistakes: ['Die Knie nicht durchdrücken', 'Nicht zu tief und nicht zu schnell rollen'],
     easier: 'Nur bis zur Brust einrollen, Hände auf den Oberschenkeln.',
   },
   {
@@ -564,7 +564,7 @@ export const EXERCISES = [
       'Einige Kreise in eine Richtung, dann in die andere.',
       'In der Mitte zur Ruhe kommen.',
     ],
-    mistakes: ['Oberkörper schwingt mit', 'Knie durchgestreckt'],
+    mistakes: ['Den Oberkörper nicht mitschwingen lassen', 'Die Knie nicht durchstrecken'],
     easier: 'Kleinere Kreise.',
   },
 
@@ -584,7 +584,7 @@ export const EXERCISES = [
       'Die Haut sanft Richtung Körpermitte dehnen und wieder loslassen.',
       'Etwa einmal pro Sekunde, ruhig weiteratmen.',
     ],
-    mistakes: ['Zu fest drücken', 'Schultern hochziehen'],
+    mistakes: ['Nicht zu fest drücken', 'Die Schultern nicht hochziehen'],
     easier: 'Im Liegen ausführen.',
     note: 'lymph',
   },
@@ -603,7 +603,7 @@ export const EXERCISES = [
       'Langsam und länger ausatmen – der Bauch sinkt.',
       'Einige ruhige Atemzüge wiederholen.',
     ],
-    mistakes: ['In die Brust atmen', 'Zu schnell atmen'],
+    mistakes: ['Nicht in die Brust atmen', 'Nicht zu schnell atmen'],
     easier: 'Im Sitzen mit einer Hand auf dem Bauch.',
     note: 'lymph',
   },
@@ -622,7 +622,7 @@ export const EXERCISES = [
       'Einige Male, dann die Arme senken.',
       'Seite wechseln.',
     ],
-    mistakes: ['Zu fest drücken', 'Hektisch werden'],
+    mistakes: ['Nicht zu fest drücken', 'Nicht hektisch werden'],
     easier: 'Den Arm nur leicht anheben.',
     note: 'lymph',
   },
@@ -641,7 +641,7 @@ export const EXERCISES = [
       'Die Fersen sanft und federnd absenken.',
       'Im ruhigen Rhythmus wiederholen.',
     ],
-    mistakes: ['Hart auf die Fersen fallen', 'Nach vorn kippen'],
+    mistakes: ['Nicht hart auf die Fersen fallen lassen', 'Nicht nach vorn kippen'],
     easier: 'An einer Wand oder Stuhllehne festhalten.',
     note: 'lymph',
   },
@@ -660,7 +660,7 @@ export const EXERCISES = [
       'Dann die Fußspitzen wegstrecken.',
       'Gleichmäßig im Wechsel wiederholen.',
     ],
-    mistakes: ['Beine verkrampft halten', 'Zu schnell'],
+    mistakes: ['Die Beine nicht verkrampft halten', 'Nicht zu schnell werden'],
     easier: 'Die Unterschenkel auf Sofa oder Stuhl ablegen.',
     note: 'lymph',
   },
@@ -679,7 +679,7 @@ export const EXERCISES = [
       'Die Arme seitlich langsam sinken lassen.',
       'Wieder heben und wiederholen.',
     ],
-    mistakes: ['Schultern hochziehen', 'Ins Hohlkreuz fallen'],
+    mistakes: ['Die Schultern nicht hochziehen', 'Nicht ins Hohlkreuz fallen'],
     easier: 'Im Sitzen oder mit leicht gebeugten Armen.',
     note: 'lymph',
   },

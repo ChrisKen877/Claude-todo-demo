@@ -1,6 +1,6 @@
 // Service Worker: hält die App offline verfügbar.
 // Bei Änderungen an den Dateien VERSION erhöhen, damit Geräte das Update laden.
-const VERSION = 'dehnroutine-v6';
+const VERSION = 'dehnroutine-v7';
 const FILES = [
   './',
   './index.html',
